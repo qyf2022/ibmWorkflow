@@ -1,0 +1,122 @@
+{
+   "private": {
+      "created": "2022-06-21T13:57:43.824Z",
+      "majorv": 0,
+      "minorv": 0,
+      "modified": "2022-06-21T13:57:43.829Z"
+   },
+   "public": {
+      "metaAppVersion": 1,
+      "stepProperties": {
+         "autoEnable": false,
+         "canMarkAsFailed": false,
+         "creator": "ibmuser",
+         "description": "<h3>Grow a ZFS aggregate<\/h3>\n<h6>This step can be used to grow a ZFS filesystem.<\/h6>\n<br><br>\nIf you have any questions please reach out to Eduardo Rocha:<br>\n<a href=\"mailto:eduardor@br.ibm.com\">Eduardo Rocha @IBM<\/a><br>\n<a href=\"https:\/\/www.linkedin.com\/in\/ehrocha\/\">Eduardo @LinkedIn<\/a>",
+         "hasNestedSteps": false,
+         "instructions": {
+            "instructionText": "<h3>Please follow the instructions of the wizard to get a ZFS grown.<\/h3><br><br>\nIf you have any questions please reach out to Eduardo Rocha:<br>\n<a href=\"mailto:eduardor@br.ibm.com\">Eduardo Rocha @IBM<\/a><br>\n<a href=\"https:\/\/www.linkedin.com\/in\/ehrocha\/\">Eduardo @LinkedIn<\/a>",
+            "instructionsSub": false
+         },
+         "isCallingStep": false,
+         "isParent": false,
+         "name": "GROW-ZFS",
+         "optional": false,
+         "sharedStepDescription": "<h3>Grow a ZFS aggregate<\/h3>\n<h6>This step can be used to grow a ZFS filesystem.<\/h6>\n<br><br>\nIf you have any questions please reach out to Eduardo Rocha:<br>\n<a href=\"mailto:eduardor@br.ibm.com\">Eduardo Rocha @IBM<\/a><br>\n<a href=\"https:\/\/www.linkedin.com\/in\/ehrocha\/\">Eduardo @LinkedIn<\/a>",
+         "sharedStepName": "GROW-ZFS",
+         "skills": "Unix System Services",
+         "stepFeedbackList": [
+         ],
+         "suspendInfo": {
+            "isSuspend": false
+         },
+         "template": {
+            "immediateScriptExecution": null,
+            "maxLrecl": null,
+            "maxRc": 0,
+            "needResolveConflicts": true,
+            "output": "",
+            "outputEncoding": "",
+            "outputSub": false,
+            "saveAsDataset": "",
+            "saveAsDatasetEncoding": "",
+            "saveAsDatasetSub": false,
+            "saveAsUnixFile": "",
+            "saveAsUnixFileEncoding": "",
+            "saveAsUnixFileSub": false,
+            "submitAs": "JCL",
+            "sysoutDD": false,
+            "templateName": null,
+            "templateNameSubstitution": false,
+            "templateSubstitution": true,
+            "templateText": "zfsadm grow -aggregate ${instance-GROW-ZFS-zfs-dsn} -size ${instance-GROW-ZFS-zfs-new-size}",
+            "templateTextMods": false,
+            "templateType": "inline"
+         },
+         "title": "This step will walk you through growing a ZFS file",
+         "weight": 1,
+         "variableReferences": [
+            {
+               "noPromptIfSet": false,
+               "required": true,
+               "scope": "instance",
+               "variablename": "GROW-ZFS-zfs-dsn"
+            },
+            {
+               "noPromptIfSet": false,
+               "required": true,
+               "scope": "instance",
+               "variablename": "GROW-ZFS-zfs-new-size"
+            }
+         ],
+         "variables": [
+            {
+               "abstractValue": "Please enter the ZFS name",
+               "category": "General",
+               "description": "d",
+               "label": "Please enter the ZFS name",
+               "name": "GROW-ZFS-zfs-dsn",
+               "scope": "instance",
+               "type": "string",
+               "varTypeInfo": {
+                  "choice": null,
+                  "defaultValue": "USERID.TEST.ZFS",
+                  "errorMessage": null,
+                  "isMultiLine": false,
+                  "maxLength": null,
+                  "minLength": null,
+                  "regularExpression": null,
+                  "validationType": "DSNAME",
+                  "valueMustBeChoice": false
+               },
+               "visibility":"private",
+               "promptAtCreate": "true",
+               "requiredAtCreate":"true"
+            },
+            {
+               "abstractValue": "In this field you will have to enter the new \"TOTAL\" size for the ZFS",
+               "category": "General",
+               "description": "d",
+               "label": "Please enter the new size for the filesystem",
+               "name": "GROW-ZFS-zfs-new-size",
+               "scope": "instance",
+               "type": "string",
+               "varTypeInfo": {
+                  "choice": null,
+                  "defaultValue": "3000",
+                  "errorMessage": null,
+                  "isMultiLine": false,
+                  "maxLength": "500",
+                  "minLength": "1",
+                  "regularExpression": null,
+                  "validationType": null,
+                  "valueMustBeChoice": false
+               },
+               "visibility":"public",
+               "promptAtCreate": "true",
+               "requiredAtCreate":"true"
+            }
+          ]  
+
+      }
+   }
+}

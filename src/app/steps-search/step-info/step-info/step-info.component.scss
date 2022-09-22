@@ -1,0 +1,6 @@
+@import "~carbon-components/scss/globals/scss/typography";
+
+:host ::ng-deep a {
+	text-decoration: none;
+	cursor: pointer;
+}

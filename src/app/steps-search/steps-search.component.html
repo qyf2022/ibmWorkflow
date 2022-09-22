@@ -1,0 +1,10 @@
+<app-header></app-header>
+<div class="bx--content">
+	 <app-home *ngIf="renderHome()"></app-home>
+
+     <app-step-info *ngIf="renderStepInfo()"></app-step-info>
+     
+</div>
+
+<ibm-placeholder></ibm-placeholder> <!-- Used for modal dialog, it's a trick to use the carbon modal dialog -->
+

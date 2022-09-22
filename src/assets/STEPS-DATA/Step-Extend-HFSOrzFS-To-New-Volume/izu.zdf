@@ -1,0 +1,118 @@
+{
+   "private": {
+      "created": "2022-06-21T13:55:12.204Z",
+      "majorv": 0,
+      "minorv": 0,
+      "modified": "2022-06-21T13:55:12.209Z"
+   },
+   "public": {
+      "metaAppVersion": 1,
+      "stepProperties": {
+         "autoEnable": false,
+         "canMarkAsFailed": false,
+         "creator": "ibmuser",
+         "description": "\n    <h1>\n                <b>Extend HFS\/zFS to a new volume<\/b>\n            <\/h1>\n    <h2>\n                <b>New volume(s) can be added to already existing HFS\/zFS<\/b>\n            <\/h2>\n    The Workflow is used to extend an already existing HFS\/zFS to a new volume(s)<br><\/br>\n    You need to provide, existing HFS\/zFS name and number of volumes you want to add.<br><\/br>\n    Each \"*\" represents one additional volume. You can also put in specific volume names separated by blank.<br><\/br>\n    <br><\/br>\n    The Workflow automatically detects if the HFS\/zFS is mounted and in such a situation does a remount-same mode to activate the change.\n    <br><\/br>\n    <br><\/br>\n    In case of questions please send an email to <a href=\"mailto:miroslav_kubik@cz.ibm.com\" target=\"_blank\">miroslav_kubik@cz.ibm.com<\/a>\n    ",
+         "hasNestedSteps": false,
+         "instructions": {
+            "instructionText": "\n\t1. Make sure you put correct file system name you want to extend<br><\/br>\n\t2. Run the Workflow<br><\/br>\n\t3. Expected return codes: 0 - volume(s) added successfully and remount done. 4 - volume(s) added, remount not needed.<br><\/br>\n\t\n\tNote: In case file system is mounted, remount - samemode will be done \n\t",
+            "instructionsSub": false
+         },
+         "isCallingStep": false,
+         "isParent": false,
+         "name": "Extend-HFSOrzFS-To-New-Volume",
+         "optional": false,
+         "sharedStepDescription": "\n    <h1>\n                <b>Extend HFS\/zFS to a new volume<\/b>\n            <\/h1>\n    <h2>\n                <b>New volume(s) can be added to already existing HFS\/zFS<\/b>\n            <\/h2>\n    The Workflow is used to extend an already existing HFS\/zFS to a new volume(s)<br><\/br>\n    You need to provide, existing HFS\/zFS name and number of volumes you want to add.<br><\/br>\n    Each \"*\" represents one additional volume. You can also put in specific volume names separated by blank.<br><\/br>\n    <br><\/br>\n    The Workflow automatically detects if the HFS\/zFS is mounted and in such a situation does a remount-same mode to activate the change.\n    <br><\/br>\n    <br><\/br>\n    In case of questions please send an email to <a href=\"mailto:miroslav_kubik@cz.ibm.com\" target=\"_blank\">miroslav_kubik@cz.ibm.com<\/a>\n    ",
+         "sharedStepName": "Extend-HFSOrzFS-To-New-Volume",
+         "skills": "MVS",
+         "stepFeedbackList": [
+         ],
+         "suspendInfo": {
+            "isSuspend": false
+         },
+         "template": {
+            "immediateScriptExecution": null,
+            "maxLrecl": 80,
+            "maxRc": 4,
+            "needResolveConflicts": true,
+            "output": "",
+            "outputEncoding": "",
+            "outputSub": false,
+            "saveAsDataset": "",
+            "saveAsDatasetEncoding": "",
+            "saveAsDatasetSub": false,
+            "saveAsUnixFile": "",
+            "saveAsUnixFileEncoding": "",
+            "saveAsUnixFileSub": false,
+            "submitAs": "JCL",
+            "sysoutDD": false,
+            "templateName": null,
+            "templateNameSubstitution": false,
+            "templateSubstitution": true,
+            "templateText": "\/\/REXXDATA  EXEC  PGM=IEBUPDTE,PARM=NEW \n\/\/SYSPRINT  DD DUMMY \n\/\/SYSUT2    DD DISP=(,PASS),UNIT=3390,SPACE=(TRK,(10,1,1)), \n\/\/             RECFM=FB,LRECL=80,BLKSIZE=0,DSORG=PO \n\/\/SYSIN     DD * \n.\/ ADD NAME=ALTREXX \n \/*REXX*\/ \n                                                              \n'DELSTACK' \ncc = 0 \n                                                              \ndsn = '${instance-Extend-HFSOrzFS-To-New-Volume-fs}' \n                                                              \ncall profile_Off \ncall get_Type dsn \ncall get_Mnt dsn \nif mounted = 1 then do \n Say 'Dataset 'dsn 'is mounted on 'out.1 \n Say 'Adding volumes ' \n Say 're-mount will be done' \n queue \" UNMOUNT FILESYSTEM(\"dsn\") REMOUNT(SAMEMODE)\" \n \"EXECIO\" queued() \"DISKW IKJEFT01 (FINIS\" \n 'DELSTACK' \n cc = 0 \nend \nelse do \n Say 'Dataset 'dsn 'is not mounted' \n Say 'Adding volumes ' \n cc = 4 \nend \n                                                                        \nqueue \" ALTER '\"r_dsn\"' ADDVOLUMES(${instance-Extend-HFSOrzFS-To-New-Volume-volume})\" \n\"EXECIO\" queued() \"DISKW IDCAMS (FINIS\" \n                                                                        \ncall profile_On \n                                                                        \n'DELSTACK' \n                                                                        \nexit cc \n\ndsn_CHCK: \n                                                                        \nchck = SYSDSN(\"'\"dsn\"'\") \n                                                                        \nif chck <> 'OK' then do \n                                                                        \n emsg = 'Error: dataset 'dsn 'does not exist' \n                                                                        \n call end_Error 8 \n                                                                        \nend \n                                                                        \nreturn \n                                                                        \nget_Type: \n\n parse arg dsn \n                                                                        \n x=outtrap(\"listc.\") \n   'listc ent('dsn') all' \n x=outtrap(\"off\") \n do i=1 to listc.0 \n  if Pos('ERROR QUALIFYING',listc.i) > 0 then do \n    emsg = 'Error: dataset 'dsn 'not found' \n    call end_Error 8 \n  end \n  if Pos('DSNTYPE--------------HFS',listc.i) > 0 then hfs = 1 \n end i \n                                                                        \n if hfs = 1 then do \n  r_dsn = dsn \n end \n else do \n  r_dsn = dsn'.DATA' \n end \nreturn \n                                                                        \nget_Mnt: \ncall bpxwunix 'df | grep \"('dsn')\" | cut -f1 -d\" \"',,out. \n         if out.1 <> 'OUT.1' then mounted = 1 \n                                                                        \nreturn \n\nprofile_Off: \n                                                                  \n 'profile nopref' \n                                                                  \nreturn \n                                                                  \nprofile_On: \n                                                                  \n 'profile prefix('userid()')' \n                                                                  \nreturn \n                                                                  \nend_Error: \n                                                                  \n parse arg cc \n Say emsg \n                                                                  \n call profile_On \n 'DELSTACK' \n                                                                  \n Exit cc \n\n\/\/REXXEX   EXEC PGM=IKJEFT01 \n\/\/SYSPRINT DD SYSOUT=* \n\/\/SYSPROC  DD DSN=*.REXXDATA.SYSUT2,DISP=(OLD,DELETE) \n\/\/IDCAMS    DD DISP=(,PASS),UNIT=3390,SPACE=(TRK,(10,1)), \n\/\/             RECFM=FB,LRECL=80,BLKSIZE=0,DSORG=PS \n\/\/IKJEFT01  DD DISP=(,PASS),UNIT=3390,SPACE=(TRK,(10,1)), \n\/\/             RECFM=FB,LRECL=80,BLKSIZE=0,DSORG=PS \n\/\/SYSTSPRT  DD SYSOUT=* \n\/\/SYSTSIN  DD * \n %ALTREXX \n\/\/IFALT     IF  (REXXEX.RC <= 4) THEN \n\/\/ALTER     EXEC  PGM=IDCAMS \n\/\/SYSPRINT  DD    SYSOUT=A \n\/\/SYSIN     DD    DSN=*.REXXEX.IDCAMS,DISP=(OLD,DELETE) \n\/\/IFALTEND  ENDIF \n\/\/IFMNT     IF  (REXXEX.RC = 0 & ALTER.RC = 0) THEN \n\/\/RMNT     EXEC PGM=IKJEFT01 \n\/\/SYSPRINT DD SYSOUT=* \n\/\/SYSTSPRT  DD SYSOUT=* \n\/\/SYSTSIN  DD DSN=*.REXXEX.IKJEFT01,DISP=(OLD,DELETE) \n\/\/IFMNTEND  ENDIF                                                                                                                   \n       \t",
+            "templateTextMods": false,
+            "templateType": "inline"
+         },
+         "title": "HFS\/zFS",
+         "weight": 1,
+         "variableReferences": [
+            {
+               "noPromptIfSet": false,
+               "required": true,
+               "scope": "instance",
+               "variablename": "Extend-HFSOrzFS-To-New-Volume-fs"
+            },
+            {
+               "noPromptIfSet": false,
+               "required": true,
+               "scope": "instance",
+               "variablename": "Extend-HFSOrzFS-To-New-Volume-volume"
+            }
+          ],
+          "variables": [
+            {
+               "abstractValue": "File system name",
+               "category": "USS",
+               "description": "Specify a file system name (can be HFS or zFS) where you want to add volume(s)",
+               "label": "HFS/zFS",
+               "name": "Extend-HFSOrzFS-To-New-Volume-fs",
+               "scope": "instance",
+               "type": "string",
+               "varTypeInfo": {
+                  "choice": null,
+                  "defaultValue": "MY.ZFS",
+                  "errorMessage": null,
+                  "isMultiLine": false,
+                  "maxLength": null,
+                  "minLength": null,
+                  "regularExpression": null,
+                  "validationType": "DSNAME",
+                  "valueMustBeChoice": false
+               },
+               "visibility":"private"
+            },
+            {
+               "abstractValue": "Volume(s) to add",
+               "category": "USS",
+               "description": "Specify number of volumes to add, each \"*\" is one volume. * * * adds 3 volumes. You can add also a specific volume serial name.",
+               "label": "NEW VOLs",
+               "name": "Extend-HFSOrzFS-To-New-Volume-volume",
+               "scope": "instance",
+               "type": "string",
+               "varTypeInfo": {
+                  "choice": null,
+                  "defaultValue": "*",
+                  "errorMessage": null,
+                  "isMultiLine": false,
+                  "maxLength": null,
+                  "minLength": null,
+                  "regularExpression": null,
+                  "validationType": null,
+                  "valueMustBeChoice": false
+               },
+               "visibility":"private"
+            }
+         ]   
+            
+      }
+   }
+}

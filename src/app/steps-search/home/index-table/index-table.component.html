@@ -1,0 +1,46 @@
+<ibm-table-container>
+    <ibm-table-toolbar [model]="model">
+      <ibm-table-toolbar-actions>
+        <button ibmButton="primary" (click)="exportSelectedRows()" >
+          {{_messageService.getBundle('HOME_EXPORT')}}
+          <svg class="bx--btn__icon" ibmIconDownload size="16"></svg>
+        </button>
+      </ibm-table-toolbar-actions>
+      <ibm-table-toolbar-content>
+        <ibm-table-toolbar-search [expandable]="true" [toolbar]="toolbar" [theme]="theme" [placeholder]="placeholder"
+          [autocomplete]="autocomplete" [disabled]="disabled" [size]="searchsize" [(value)]="searchDomValue"
+          (valueChange)="searchValueChange($event)" (clear)="clearSearchValue()"></ibm-table-toolbar-search>
+      </ibm-table-toolbar-content>
+    </ibm-table-toolbar> 
+
+
+    <!--table-->
+    <ibm-table
+      [model]="model"
+      [size]="size"
+      [showSelectionColumn]="showSelectionColumn"
+      [striped]="striped"
+      [sortable]="sortable"
+      (sort)="customSort($event)"
+      [isDataGrid]="isDataGrid">
+    </ibm-table>
+
+    <ibm-pagination [model]="model" (selectPage)="selectPage($event)"></ibm-pagination>
+</ibm-table-container>
+
+<ng-template #expandedPaneTemplate let-data="data">
+  <div style="white-space: pre-line;" [innerHtml] = subDesc(data.description)>
+  </div>
+  <div style="margin-top: 18px;margin-bottom: 10px;">
+    <a (click)="goToStepInfo(data.stepName)">{{_messageService.getBundle('HOME_VIEW_STEP_INFO')}}</a>
+  </div>
+</ng-template>
+
+<ng-template #customTableItemTemplateExport let-data="data">
+  <div>
+    <button ibmButton="primary" size="sm" (click)="downloadData(data)">
+      {{_messageService.getBundle('HOME_EXPORT')}}
+          <svg class="bx--btn__icon" ibmIconDownload size="16"></svg>
+    </button>
+  </div>
+</ng-template>
