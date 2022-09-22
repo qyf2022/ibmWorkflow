@@ -1,0 +1,18 @@
+{
+    "BUNDLE": {
+        "PROJECT_NAME" : "z/OSMF Workflow Steps Search",
+        "HOME_DESC1" : "Search z/OSMF Workflow Steps and import it to your environment.",
+        "HOME_CONTACT_US" : "Contact Us",
+        "HOME_DESC7" : "To request a new step or report a problem, please open an issue on GitHub.",
+        "HOME_LAUNCH_GITHUB" : "Launch github",
+        "HOME_TABLE_STEP_NAME": "Step Name", 
+        "HOME_TABLE_CREATOR": "Creator", 
+        "HOME_EXPORT": "Export",
+        "HOME_VIEW_STEP_INFO": "View more step info",
+        "TERMS_OF_USE": "Terms of use",
+        "STEP_INFO": "Step info"
+    },
+    "MESSAGES": {
+        
+    }
+}

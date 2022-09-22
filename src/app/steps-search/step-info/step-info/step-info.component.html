@@ -1,0 +1,15 @@
+
+<div>
+  <div style="margin-bottom: 48px;">
+    <ibm-breadcrumb  [noTrailingSlash]="noTrailingSlash">
+      <ibm-breadcrumb-item>
+       <a (click)="goToHome()"> {{_messageService.getBundle('STEP_INFO')}} </a> 
+      </ibm-breadcrumb-item>
+    </ibm-breadcrumb>
+  </div>
+  
+  <!--TODO Display the json data pretty  -->
+  <pre>
+    {{ this.stepDetailData }}
+  </pre>
+</div>

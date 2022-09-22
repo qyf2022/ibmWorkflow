@@ -1,0 +1,126 @@
+{
+   "private": {
+      "created": "2022-06-21T13:35:12.432Z",
+      "majorv": 0,
+      "minorv": 0,
+      "modified": "2022-06-21T13:35:12.437Z"
+   },
+   "public": {
+      "metaAppVersion": 1,
+      "stepProperties": {
+         "autoEnable": true,
+         "canMarkAsFailed": false,
+         "creator": "ibmuser",
+         "description": "This step will reset the password for a given userID.",
+         "hasNestedSteps": false,
+         "instructions": {
+            "instructionText": "This step can be used interactively or be triggered from a service userID.",
+            "instructionsSub": false
+         },
+         "isCallingStep": false,
+         "isParent": false,
+         "name": "RACF-RESETPW",
+         "optional": false,
+         "sharedStepDescription": "This step will reset the password for a given userID.",
+         "sharedStepName": "RACF-RESETPW",
+         "skills": "RACF",
+         "stepFeedbackList": [
+         ],
+         "suspendInfo": {
+            "isSuspend": false
+         },
+         "template": {
+            "immediateScriptExecution": {
+               "failedPattern": [
+                  "RACFRX01E.*"
+               ],
+               "successPattern": "RACFRX01I.*"
+            },
+            "maxLrecl": null,
+            "maxRc": 0,
+            "needResolveConflicts": true,
+            "output": "",
+            "outputEncoding": "",
+            "outputSub": false,
+            "saveAsDataset": "",
+            "saveAsDatasetEncoding": "",
+            "saveAsDatasetSub": false,
+            "saveAsUnixFile": "",
+            "saveAsUnixFileEncoding": "",
+            "saveAsUnixFileSub": false,
+            "submitAs": "TSO-REXX",
+            "sysoutDD": false,
+            "templateName": null,
+            "templateNameSubstitution": false,
+            "templateSubstitution": true,
+            "templateText": "\/*REXX*\/\nADDRESS TSO \"ALU ${instance-RACF-RESETPW-racf-user} PASSWORD(${instance-RACF-RESETPW-racf-pw}) RESUME\"\nIF RC=0 THEN SAY \"RACFRX01I - Password Reset Succeeded.\"\nELSE SAY \"RACFRX01E - Command did not succeed.\"\nEXIT",
+            "templateTextMods": false,
+            "templateType": "inline"
+         },
+         "title": "RACF Reset Password Step",
+         "weight": 1,
+         "variableReferences": [
+            {
+               "noPromptIfSet": false,
+               "required": false,
+               "scope": "instance",
+               "variablename": "RACF-RESETPW-racf-user"
+            },
+            {
+               "noPromptIfSet": false,
+               "required": false,
+               "scope": "instance",
+               "variablename": "RACF-RESETPW-racf-pw"
+            }
+         ],
+         "variables": [
+            {
+               "abstractValue": "This userID will have their password reset and resumed.",
+               "category": "RACF",
+               "description": "d",
+               "label": "Please enter userID",
+               "name": "RACF-RESETPW-racf-user",
+               "scope": "instance",
+               "type": "string",
+               "varTypeInfo": {
+                  "choice": null,
+                  "defaultValue": null,
+                  "errorMessage": null,
+                  "isMultiLine": false,
+                  "maxLength": null,
+                  "minLength": null,
+                  "regularExpression": null,
+                  "validationType": "USERID",
+                  "valueMustBeChoice": false
+               },
+               "visibility":"private",
+               "promptAtCreate": "true",
+               "requiredAtCreate":"true"
+            },
+            {
+               "abstractValue": "This is the new password for the userID.",
+               "category": "RACF",
+               "description": "d",
+               "label": "Please enter the desired password",
+               "name": "RACF-RESETPW-racf-pw",
+               "scope": "instance",
+               "type": "string",
+               "varTypeInfo": {
+                  "choice": null,
+                  "defaultValue": null,
+                  "errorMessage": null,
+                  "isMultiLine": false,
+                  "maxLength": "8",
+                  "minLength": "1",
+                  "regularExpression": null,
+                  "validationType": null,
+                  "valueMustBeChoice": false
+               },
+               "visibility":"private",
+               "promptAtCreate": "true",
+               "requiredAtCreate":"true"
+            }
+          ]
+      }
+   }
+}

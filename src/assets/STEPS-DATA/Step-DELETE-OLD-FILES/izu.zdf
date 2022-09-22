@@ -1,0 +1,172 @@
+{
+   "private": {
+      "created": "2022-06-21T13:41:20.248Z",
+      "majorv": 0,
+      "minorv": 0,
+      "modified": "2022-06-21T13:41:20.253Z"
+   },
+   "public": {
+      "metaAppVersion": 1,
+      "stepProperties": {
+         "autoEnable": false,
+         "canMarkAsFailed": false,
+         "creator": "ibmuser",
+         "description": "This bash script will be executed on USS to delete 'n' day old files from an input path",
+         "hasNestedSteps": false,
+         "instructions": {
+            "instructionText": "\n        - Be careful and validate the input information before submiting the job (This is a disrruptive command!)\n        - Make sure you have the proper authorization to perform the commands\n        - Make sure the input path is correct (it is not recommended to use wildcards)",
+            "instructionsSub": false
+         },
+         "isCallingStep": false,
+         "isParent": false,
+         "name": "DELETE-OLD-FILES",
+         "optional": false,
+         "sharedStepDescription": "This bash script will be executed on USS to delete 'n' day old files from an input path",
+         "sharedStepName": "DELETE-OLD-FILES",
+         "stepFeedbackList": [
+         ],
+         "suspendInfo": {
+            "isSuspend": false
+         },
+         "template": {
+            "immediateScriptExecution": null,
+            "maxLrecl": null,
+            "maxRc": 0,
+            "needResolveConflicts": true,
+            "output": "",
+            "outputEncoding": "",
+            "outputSub": false,
+            "saveAsDataset": "",
+            "saveAsDatasetEncoding": "",
+            "saveAsDatasetSub": false,
+            "saveAsUnixFile": "",
+            "saveAsUnixFileEncoding": "",
+            "saveAsUnixFileSub": false,
+            "submitAs": "JCL",
+            "sysoutDD": false,
+            "templateName": null,
+            "templateNameSubstitution": false,
+            "templateSubstitution": true,
+            "templateText": "#!\/bin\/bash\n            echo 'Running script to clean up old uss files!'\n            echo 'The input path is: '${instance-deleteOldFiles-input-path}\n            echo 'This is the name argument: '${instance-deleteOldFiles-file-name}\n            echo 'This is the archive path: '${instance-deleteOldFiles-archive-path}\n            echo 'Days old value is: '${instance-deleteOldFiles-how-old}\n            if [[ ${instance-deleteOldFiles-input-path} == *\"*\"* ]]; then\n              echo \"The input path contains wildcards!\"\n              exit -1\n            fi\n            if [ -d ${instance-deleteOldFiles-archive-path} ]; then\n              echo 'These commands will be executed: find ${instance-deleteOldFiles-input-path} -type f -name \"*\" -mtime +${instance-deleteOldFiles-how-old} -exec mv {} ${instance-deleteOldFiles-archive-path} \\; '\n              echo 'find ${instance-deleteOldFiles-input-path} -type f -name \"*\" -mtime +${instance-deleteOldFiles-how-old} -exec rm {} \\;'  \n              find ${instance-deleteOldFiles-input-path} -type f -name \"*\" -mtime +${instance-deleteOldFiles-how-old} -exec mv {} ${instance-deleteOldFiles-archive-path} \\;\n              find ${instance-deleteOldFiles-input-path} -type f -name \"*\" -mtime +${instance-deleteOldFiles-how-old} -exec rm {} \\;\n            else\n              echo 'This command will be executed: find ${instance-deleteOldFiles-input-path} -type f -name \"*\" -mtime +${instance-deleteOldFiles-how-old} -exec rm {} \\; '\n              find ${instance-deleteOldFiles-input-path} -type f -name \"*\" -mtime +${instance-deleteOldFiles-how-old} -exec rm {} \\;\n            fi\n            ",
+            "templateTextMods": false,
+            "templateType": "inline"
+         },
+         "title": "Find and delete old files",
+         "weight": 1,
+         "variableReferences": [
+            {
+                "variablename": "deleteOldFiles-input-path",
+                "scope": "instance",
+                "noPromptIfSet": true,
+                "required": true
+            },
+            {
+                "variablename": "deleteOldFiles-how-old",
+                "scope": "instance",
+                "noPromptIfSet": true,
+                "required": true
+            },
+            {
+                "variablename": "deleteOldFiles-archive-path",
+                "scope": "instance",
+                "noPromptIfSet": true,
+                "required": false
+            },
+            {
+                "variablename": "deleteOldFiles-file-name",
+                "scope": "instance",
+                "noPromptIfSet": true,
+                "required": true
+            }
+        ],
+         "variables": [
+            {
+              "varTypeInfo": {
+                 "valueMustBeChoice": false,
+                 "regularExpression": null,
+                 "defaultValue": "~/",
+                 "minLength": null,
+                 "validationType": null,
+                 "errorMessage": null,
+                 "isMultiLine": false,
+                 "choice": null,
+                 "maxLength": null
+            },
+             "abstractValue": "Input path for the \"find and delete\" script (Don't use wildcards!)",
+             "scope": "instance",
+             "name": "deleteOldFiles-input-path",
+             "description": "This will be used as input path for the find and delete script. (Don't use wildcards in the path)",
+             "label": "Please enter the input path",
+             "category": "General",
+             "type": "string",
+             "visibility":"public",
+             "promptAtCreate": "true",
+             "requiredAtCreate":"true"
+           },
+           {
+              "varTypeInfo": {
+                "minValue": "1",
+                "defaultValue": null,
+                "maxValue":null
+            },
+             "abstractValue": "This will be used as the days old value in the script.",
+             "scope": "instance",
+             "name": "deleteOldFiles-how-old",
+             "description": "This will be used as the period of time in the script. Files found within this range will be deleted!",
+             "label": "Please enter the number of days old to be used in script",
+             "category": "General",
+             "type": "integer",
+             "visibility":"public",
+             "promptAtCreate": "true",
+             "requiredAtCreate":"true"
+           },
+           {
+              "varTypeInfo": {
+                 "valueMustBeChoice": false,
+                 "regularExpression": null,
+                 "defaultValue": "N/A",
+                 "minLength": null,
+                 "validationType": null,
+                 "errorMessage": null,
+                 "isMultiLine": false,
+                 "choice": null,
+                 "maxLength": null
+            },
+             "abstractValue": "This will be used as the archive path for the find script.",
+             "scope": "instance",
+             "name": "deleteOldFiles-archive-path",
+             "description": "If you would like to archive the files before deleting them. Fill this varible with the archive path",
+             "label": "Please enter the archive path",
+             "category": "General",
+             "type": "string",
+              "visibility":"public",
+             "promptAtCreate": "true",
+             "requiredAtCreate":"false"
+           },
+           {
+              "varTypeInfo": {
+                 "valueMustBeChoice": false,
+                 "regularExpression": null,
+                 "defaultValue": "*",
+                 "minLength": null,
+                 "validationType": null,
+                 "errorMessage": null,
+                 "isMultiLine": false,
+                 "choice": null,
+                 "maxLength": null
+            },
+             "abstractValue": "This will be used as the name argument for the find script.",
+             "scope": "instance",
+             "name": "deleteOldFiles-file-name",
+             "description": "If you would like to look for a specific file or extension. Fill this varible with the argument (use wildcards to provide a valid format e.g '*.txt')",
+             "label": "Please enter the file name or extension",
+             "category": "General",
+             "type": "string",
+              "visibility":"public",
+             "promptAtCreate": "true",
+             "requiredAtCreate":"true"
+           }
+        ]
+      }
+   }
+}
